@@ -1,0 +1,6 @@
+﻿services:
+  jex.application:
+    image: jex.application
+    build:
+      context: .
+      dockerfile: Jex.Application/Dockerfile
