@@ -1,4 +1,5 @@
 ﻿using Jex.Persistence.Abstraction.Models.Backoffice;
+using Jex.Persistence.Abstraction.Models.web;
 using Jex.Persistence.Abstraction.Repositories;
 using Jex.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ public class CompanyRepository : ICompanyRepository
     {
         _databaseContext = databaseContext;
     }
+
     public async Task<Company?> GetCompany(long companyId)
     {
         return await _databaseContext.Companies.SingleOrDefaultAsync(c => c.Id == companyId);
@@ -35,5 +37,12 @@ public class CompanyRepository : ICompanyRepository
     {
         _databaseContext.Companies.Remove(company);
         await _databaseContext.SaveChangesAsync();
+    }
+
+    public async Task<List<CompanyWithVacancies>> GetCompaniesWithVacancies()
+    {
+        return await _databaseContext.CompaniesWithVacancies
+            .Include(c => c.Vacancies)
+            .ToListAsync();
     }
 }
