@@ -4,7 +4,6 @@ public class UpdateCompanyRequest
 {
     [FastEndpoints.BindFrom("companyId")]
     public long CompanyId { get; set; }
-
-    [FastEndpoints.FromBody]
-    public Persistence.Abstraction.Models.Backoffice.Company Company { get; set; }
+    public string Name { get; set; }
+    public string Address { get; set; }
 }

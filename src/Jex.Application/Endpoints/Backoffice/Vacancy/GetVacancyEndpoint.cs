@@ -3,7 +3,7 @@ using Jex.Persistence.Abstraction.Repositories;
 
 namespace Jex.Application.Endpoints.Backoffice.Vacancy;
 
-public class GetVacancyEndpoint : FastEndpoints.Endpoint<GetVacancyRequest, Persistence.Abstraction.Models.Backoffice.Vacancy>
+public class GetVacancyEndpoint : FastEndpoints.Endpoint<GetVacancyRequest, Persistence.Abstraction.Models.Vacancy>
 {
     private readonly IVacancyRepository _vacancyRepository;
 

@@ -1,9 +1,10 @@
-﻿using Jex.Persistence.Abstraction.Models.web;
+﻿using Jex.Application.Responses;
+using Jex.Application.Responses.Company;
 using Jex.Persistence.Abstraction.Repositories;
 
 namespace Jex.Application.Endpoints.Web;
 
-public class GetCompanyWithVacanciesEndpoint : FastEndpoints.EndpointWithoutRequest<List<CompanyWithVacancies>>
+public class GetCompanyWithVacanciesEndpoint : FastEndpoints.EndpointWithoutRequest<List<CompanyWithVacanciesResponse>>
 {
     private readonly ICompanyRepository _companyRepository;
 
@@ -14,7 +15,7 @@ public class GetCompanyWithVacanciesEndpoint : FastEndpoints.EndpointWithoutRequ
 
     public override void Configure()
     {
-        Get("/Web/companies");
+        Get("/web/companies");
 
         AllowAnonymous();
 
@@ -36,6 +37,18 @@ public class GetCompanyWithVacanciesEndpoint : FastEndpoints.EndpointWithoutRequ
     {
         var companyWithVacancies = await _companyRepository.GetCompaniesWithVacancies();
 
-        await SendOkAsync(companyWithVacancies, cancellation: ct);
+        var response = companyWithVacancies.Select(c => new CompanyWithVacanciesResponse
+        {
+            Id = c.Id,
+            Name = c.Name,
+            Address = c.Address,
+            Vacancies = c.Vacancies.Select(v => new CompanyVacancy
+            {
+                Title = v.Title,
+                Description = v.Description
+            }).ToList()
+        }).ToList();
+
+        await SendOkAsync(response, cancellation: ct);
     }
 }

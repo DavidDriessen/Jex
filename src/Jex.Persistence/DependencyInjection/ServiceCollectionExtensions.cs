@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddDbContext<DatabaseContext>();
 
         serviceCollection.AddScoped<ICompanyRepository, CompanyRepository>();
+        serviceCollection.AddScoped<IVacancyRepository, VacancyRepository>();
         
         return serviceCollection;
     }

@@ -1,10 +1,10 @@
 ﻿using Jex.Application.Requests.Backoffice.Vacancy;
+using Jex.Application.Responses;
 using Jex.Persistence.Abstraction.Repositories;
 
 namespace Jex.Application.Endpoints.Backoffice.Vacancy;
 
-public class CreateVacancyEndpoint : FastEndpoints.Endpoint<CreateVacancyRequest,
-    Persistence.Abstraction.Models.Backoffice.Vacancy>
+public class CreateVacancyEndpoint : FastEndpoints.Endpoint<CreateVacancyRequest, VacancyResponse>
 {
     private readonly IVacancyRepository _vacancyRepository;
 
@@ -36,13 +36,15 @@ public class CreateVacancyEndpoint : FastEndpoints.Endpoint<CreateVacancyRequest
 
     public override async Task HandleAsync(CreateVacancyRequest req, CancellationToken ct)
     {
-        if (req.Vacancy.Id != 0)
+        var vacancy = await _vacancyRepository.AddVacancy(req.Title, req.Description, req.State);
+
+        var response = new VacancyResponse
         {
-            await SendErrorsAsync(cancellation: ct);
-        }
-
-        var vacancy = await _vacancyRepository.AddVacancy(req.Vacancy);
-
-        await SendCreatedAtAsync<GetVacancyEndpoint>(vacancy.Id, vacancy, cancellation: ct);
+            Id = vacancy.Id,
+            Title = vacancy.Title,
+            Description = vacancy.Description,
+            State = vacancy.State
+        };
+        await SendCreatedAtAsync<GetVacancyEndpoint>(vacancy.Id, response, cancellation: ct);
     }
 }

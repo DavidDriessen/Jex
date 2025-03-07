@@ -1,5 +1,5 @@
-﻿using Jex.Persistence.Abstraction.Models.Backoffice;
-using Jex.Persistence.Abstraction.Models.web;
+﻿using Jex.Persistence.Abstraction.Enums;
+using Jex.Persistence.Abstraction.Models;
 using Jex.Persistence.Abstraction.Repositories;
 using Jex.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +20,13 @@ public class CompanyRepository : ICompanyRepository
         return await _databaseContext.Companies.SingleOrDefaultAsync(c => c.Id == companyId);
     }
 
-    public async Task<Company> AddCompany(Company company)
+    public async Task<Company> AddCompany(string companyName, string companyAddress)
     {
+        var company = new Company
+        {
+            Name = companyName,
+            Address = companyAddress
+        };
         _databaseContext.Companies.Add(company);
         await _databaseContext.SaveChangesAsync();
         return company;
@@ -29,7 +34,7 @@ public class CompanyRepository : ICompanyRepository
 
     public async Task UpdateCompany(Company company)
     {
-        // ToDo: Implement correct way at updating 
+        _databaseContext.Entry(company).State = EntityState.Modified;
         await _databaseContext.SaveChangesAsync();
     }
 
@@ -39,10 +44,11 @@ public class CompanyRepository : ICompanyRepository
         await _databaseContext.SaveChangesAsync();
     }
 
-    public async Task<List<CompanyWithVacancies>> GetCompaniesWithVacancies()
+    public async Task<List<Company>> GetCompaniesWithVacancies()
     {
-        return await _databaseContext.CompaniesWithVacancies
+        return await _databaseContext.Companies
             .Include(c => c.Vacancies)
+            .Where(c => c.Vacancies.Any(v => v.State == VacancyState.Active))
             .ToListAsync();
     }
 }

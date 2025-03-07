@@ -1,9 +1,11 @@
-﻿using Jex.Application.Requests.Backoffice.Company;
+﻿using Jex.Application.Mappers;
+using Jex.Application.Requests.Backoffice.Company;
+using Jex.Application.Responses.Company;
 using Jex.Persistence.Abstraction.Repositories;
 
 namespace Jex.Application.Endpoints.Backoffice.Company;
 
-public class UpdateCompanyEndpoint : FastEndpoints.Endpoint<UpdateCompanyRequest, Persistence.Abstraction.Models.Backoffice.Company>
+public class UpdateCompanyEndpoint : FastEndpoints.Endpoint<UpdateCompanyRequest, CompanyResponse, UpdateCompanyMapper>
 {
     private readonly ICompanyRepository _companyRepository;
 
@@ -14,7 +16,7 @@ public class UpdateCompanyEndpoint : FastEndpoints.Endpoint<UpdateCompanyRequest
     
     public override void Configure()
     {
-        Post("/backoffice/company/{companyId}");
+        Put("/backoffice/company/{companyId}");
 
         AllowAnonymous();
 
@@ -39,11 +41,11 @@ public class UpdateCompanyEndpoint : FastEndpoints.Endpoint<UpdateCompanyRequest
     {
         var company = await _companyRepository.GetCompany(req.CompanyId);
 
-        company.Name = req.Company.Name;
-        company.Address = req.Company.Address;
+        company.Name = req.Name;
+        company.Address = req.Address;
         
         await _companyRepository.UpdateCompany(company);
             
-        await SendOkAsync(company, cancellation: ct);
+        await SendOkAsync(Map.FromEntity(company), cancellation: ct);
     }
 }

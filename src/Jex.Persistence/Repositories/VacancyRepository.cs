@@ -1,4 +1,5 @@
-﻿using Jex.Persistence.Abstraction.Models.Backoffice;
+﻿using Jex.Persistence.Abstraction.Enums;
+using Jex.Persistence.Abstraction.Models;
 using Jex.Persistence.Abstraction.Repositories;
 using Jex.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
@@ -19,16 +20,22 @@ public class VacancyRepository : IVacancyRepository
         return await _databaseContext.Vacancies.SingleOrDefaultAsync(c => c.Id == VacancyId);
     }
 
-    public async Task<Vacancy> AddVacancy(Vacancy Vacancy)
+    public async Task<Vacancy> AddVacancy(string title, string description, VacancyState state)
     {
-        _databaseContext.Vacancies.Add(Vacancy);
+        var vacancy = new Vacancy
+        {
+            Title = title,
+            Description = description,
+            State = state
+        };
+        _databaseContext.Vacancies.Add(vacancy);
         await _databaseContext.SaveChangesAsync();
-        return Vacancy;
+        return vacancy;
     }
 
     public async Task UpdateVacancy(Vacancy Vacancy)
     {
-        // ToDo: Implement correct way at updating 
+        _databaseContext.Entry(Vacancy).State = EntityState.Modified;
         await _databaseContext.SaveChangesAsync();
     }
 
@@ -38,10 +45,15 @@ public class VacancyRepository : IVacancyRepository
         await _databaseContext.SaveChangesAsync();
     }
 
-    public async Task<Vacancy> AddVacancyToCompany(Company company, Vacancy vacancy)
+    public async Task<Vacancy> AddVacancyToCompany(Company company, string title, string description)
     {
+        var vacancy = new Vacancy
+        {
+            Title = title,
+            Description = description
+        };
         _databaseContext.Vacancies.Add(vacancy);
-        var companyWithVacancies = await _databaseContext.CompaniesWithVacancies
+        var companyWithVacancies = await _databaseContext.Companies
             .SingleAsync(c => c.Id == company.Id);
         companyWithVacancies.Vacancies.Add(vacancy);
         await _databaseContext.SaveChangesAsync();

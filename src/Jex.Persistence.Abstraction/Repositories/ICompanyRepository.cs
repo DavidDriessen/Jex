@@ -1,13 +1,12 @@
-﻿using Jex.Persistence.Abstraction.Models.Backoffice;
-using Jex.Persistence.Abstraction.Models.web;
+﻿using Jex.Persistence.Abstraction.Models;
 
 namespace Jex.Persistence.Abstraction.Repositories;
 
 public interface ICompanyRepository
 {
     Task<Company?> GetCompany(long companyId);
-    Task<Company> AddCompany(Company company);
+    Task<Company> AddCompany(string companyName, string companyAddress);
     Task UpdateCompany(Company company);
     Task DeleteCompany(Company company);
-    Task<List<CompanyWithVacancies>> GetCompaniesWithVacancies();
+    Task<List<Company>> GetCompaniesWithVacancies();
 }

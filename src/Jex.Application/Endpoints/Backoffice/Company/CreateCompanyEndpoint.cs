@@ -1,10 +1,10 @@
 ﻿using Jex.Application.Requests.Backoffice.Company;
+using Jex.Application.Responses.Company;
 using Jex.Persistence.Abstraction.Repositories;
 
 namespace Jex.Application.Endpoints.Backoffice.Company;
 
-public class CreateCompanyEndpoint : FastEndpoints.Endpoint<CreateCompanyRequest,
-    Persistence.Abstraction.Models.Backoffice.Company>
+public class CreateCompanyEndpoint : FastEndpoints.Endpoint<CreateCompanyRequest, CompanyResponse>
 {
     private readonly ICompanyRepository _companyRepository;
 
@@ -36,13 +36,14 @@ public class CreateCompanyEndpoint : FastEndpoints.Endpoint<CreateCompanyRequest
 
     public override async Task HandleAsync(CreateCompanyRequest req, CancellationToken ct)
     {
-        if (req.Company.Id != 0)
+        var company = await _companyRepository.AddCompany(req.Name, req.Address);
+
+        var response = new CompanyResponse
         {
-            await SendErrorsAsync(cancellation: ct);
-        }
-
-        var company = await _companyRepository.AddCompany(req.Company);
-
-        await SendCreatedAtAsync<GetCompanyEndpoint>(company.Id, company, cancellation: ct);
+            Id = company.Id,
+            Name = company.Name,
+            Address = company.Address
+        };
+        await SendCreatedAtAsync<GetCompanyEndpoint>(company.Id, response, cancellation: ct);
     }
 }

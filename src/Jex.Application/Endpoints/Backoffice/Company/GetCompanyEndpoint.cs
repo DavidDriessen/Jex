@@ -1,9 +1,10 @@
 ﻿using Jex.Application.Requests.Backoffice.Company;
+using Jex.Application.Responses.Company;
 using Jex.Persistence.Abstraction.Repositories;
 
 namespace Jex.Application.Endpoints.Backoffice.Company;
 
-public class GetCompanyEndpoint : FastEndpoints.Endpoint<GetCompanyRequest, Persistence.Abstraction.Models.Backoffice.Company>
+public class GetCompanyEndpoint : FastEndpoints.Endpoint<GetCompanyRequest, CompanyResponse>
 {
     private readonly ICompanyRepository _companyRepository;
 
@@ -42,7 +43,12 @@ public class GetCompanyEndpoint : FastEndpoints.Endpoint<GetCompanyRequest, Pers
         {
             await SendErrorsAsync(404, ct);
         }
-            
-        await SendOkAsync(company, cancellation: ct);
+        var response = new CompanyResponse
+        {
+            Id = company.Id,
+            Name = company.Name,
+            Address = company.Address
+        };
+        await SendOkAsync(response, cancellation: ct);
     }
 }

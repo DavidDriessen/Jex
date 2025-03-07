@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Jex.Persistence.Abstraction.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Jex.Persistence.Configurations;
 
-public class VacancyEntityConfiguration: IEntityTypeConfiguration<Abstraction.Models.Backoffice.Vacancy>
+public class VacancyEntityConfiguration: IEntityTypeConfiguration<Vacancy>
 {
-    public void Configure(EntityTypeBuilder<Abstraction.Models.Backoffice.Vacancy> builder)
+    public void Configure(EntityTypeBuilder<Vacancy> builder)
     {
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.Title);
         builder.Property(c => c.Description);
+        builder.Property(c => c.State);
     }
 }

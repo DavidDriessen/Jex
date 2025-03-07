@@ -2,6 +2,6 @@
 
 public class CreateCompanyRequest
 {
-    [FastEndpoints.FromBody]
-    public Persistence.Abstraction.Models.Backoffice.Company Company { get; set; }
+    public string Name { get; set; }
+    public string Address { get; set; }
 }

@@ -1,9 +1,10 @@
 ﻿using Jex.Persistence.Abstraction.Enums;
 
-namespace Jex.Application.Requests.Backoffice.Vacancy;
+namespace Jex.Application.Responses;
 
-public class CreateVacancyRequest
+public class VacancyResponse
 {
+    public long Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public VacancyState State { get; set; }

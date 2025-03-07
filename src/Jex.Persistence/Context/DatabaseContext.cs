@@ -1,5 +1,4 @@
-﻿using Jex.Persistence.Abstraction.Models.Backoffice;
-using Jex.Persistence.Abstraction.Models.web;
+﻿using Jex.Persistence.Abstraction.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Jex.Persistence.Context;
@@ -7,7 +6,6 @@ namespace Jex.Persistence.Context;
 public class DatabaseContext : DbContext
 {
     public DbSet<Company> Companies { get; set; }
-    public DbSet<CompanyWithVacancies> CompaniesWithVacancies { get; set; }
     public DbSet<Vacancy> Vacancies { get; set; }
 
     private string DbPath { get; }

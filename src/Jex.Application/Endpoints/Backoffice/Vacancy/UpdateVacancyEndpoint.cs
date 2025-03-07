@@ -3,7 +3,7 @@ using Jex.Persistence.Abstraction.Repositories;
 
 namespace Jex.Application.Endpoints.Backoffice.Vacancy;
 
-public class UpdateVacancyEndpoint : FastEndpoints.Endpoint<UpdateVacancyRequest, Persistence.Abstraction.Models.Backoffice.Vacancy>
+public class UpdateVacancyEndpoint : FastEndpoints.Endpoint<UpdateVacancyRequest, Persistence.Abstraction.Models.Vacancy>
 {
     private readonly IVacancyRepository _vacancyRepository;
 
@@ -14,7 +14,7 @@ public class UpdateVacancyEndpoint : FastEndpoints.Endpoint<UpdateVacancyRequest
     
     public override void Configure()
     {
-        Post("/backoffice/vacancy/{vacancyId}");
+        Put("/backoffice/vacancy/{vacancyId}");
 
         AllowAnonymous();
 
@@ -39,8 +39,8 @@ public class UpdateVacancyEndpoint : FastEndpoints.Endpoint<UpdateVacancyRequest
     {
         var vacancy = await _vacancyRepository.GetVacancy(req.VacancyId);
 
-        vacancy.Title = req.Vacancy.Title;
-        vacancy.Description = req.Vacancy.Description;
+        vacancy.Title = req.Title;
+        vacancy.Description = req.Description;
         
         await _vacancyRepository.UpdateVacancy(vacancy);
             
